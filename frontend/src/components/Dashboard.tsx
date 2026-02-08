@@ -51,8 +51,7 @@ export default function Dashboard() {
   const [scanFormMode, setScanFormMode] = useState(false)
   const [scanFormSelectedIds, setScanFormSelectedIds] = useState<Set<number>>(new Set())
   const [creatingScanForm, setCreatingScanForm] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [scanFormResult, setScanFormResult] = useState<{ form_url: string; tracking_codes: string[] } | null>(null)
+  const [, setScanFormResult] = useState<{ form_url: string; tracking_codes: string[] } | null>(null)
 
   // Copy to clipboard state
   const [copiedTrackingCode, setCopiedTrackingCode] = useState<string | null>(null)
