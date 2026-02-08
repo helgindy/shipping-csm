@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from ..auth import get_current_user
 from sqlalchemy.orm import Session
 from typing import Dict, Any, Optional, List
 from pydantic import BaseModel
@@ -8,7 +9,7 @@ from ..models import Setting
 from ..schemas import SettingsResponse, SettingsUpdate, DefaultFromAddress
 from ..services import easypost_service
 
-router = APIRouter(prefix="/api/settings", tags=["settings"])
+router = APIRouter(prefix="/api/settings", tags=["settings"], dependencies=[Depends(get_current_user)])
 
 # Default settings values
 DEFAULT_FROM_ADDRESS = {

@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     # Legacy key support (falls back if specific keys not set)
     EASYPOST_API_KEY: str = ""
 
+    # Auth
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str = "changeme"
+    JWT_SECRET_KEY: str = "change-this-to-a-random-secret-key"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_MINUTES: int = 1440  # 24 hours
+
     # App
     APP_NAME: str = "Shipping Management Platform"
     DEBUG: bool = False

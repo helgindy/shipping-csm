@@ -30,6 +30,9 @@ services:
       EASYPOST_API_KEY_TEST: ${EASYPOST_API_KEY_TEST}
       EASYPOST_API_KEY: ${EASYPOST_API_KEY}
       DEBUG: ${DEBUG}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     expose:
       - "8000"
     depends_on:

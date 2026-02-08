@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Query
+from ..auth import get_current_user
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
 from typing import Optional
@@ -9,7 +10,7 @@ from ..models import Shipment
 from ..schemas import ShipmentResponse, ShipmentListResponse, DashboardStats
 from ..services import easypost_service
 
-router = APIRouter(prefix="/api/shipments", tags=["shipments"])
+router = APIRouter(prefix="/api/shipments", tags=["shipments"], dependencies=[Depends(get_current_user)])
 
 
 @router.get("", response_model=ShipmentListResponse)

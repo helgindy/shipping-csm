@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { Package, PlusCircle, Settings, LayoutDashboard, FileText } from 'lucide-react'
+import { Package, PlusCircle, Settings, LayoutDashboard, FileText, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -9,6 +10,8 @@ const navItems = [
 ]
 
 export default function Sidebar() {
+  const { logout } = useAuth()
+
   return (
     <aside className="w-64 bg-dark-900 border-r border-dark-800 flex flex-col">
       {/* Logo */}
@@ -47,9 +50,13 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-dark-800">
-        <p className="text-xs text-dark-500 text-center">
-          KeystonedTCG Shipping
-        </p>
+        <button
+          onClick={logout}
+          className="flex items-center gap-2 text-dark-400 hover:text-white transition-colors w-full px-4 py-2 rounded-lg hover:bg-dark-800"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="text-sm">Sign Out</span>
+        </button>
       </div>
     </aside>
   )

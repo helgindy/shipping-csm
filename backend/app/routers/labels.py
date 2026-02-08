@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from ..auth import get_current_user
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from typing import List
@@ -24,7 +25,7 @@ from ..schemas import (
 from ..services import easypost_service
 from .settings import get_setting, DEFAULT_FROM_ADDRESS
 
-router = APIRouter(prefix="/api/labels", tags=["labels"])
+router = APIRouter(prefix="/api/labels", tags=["labels"], dependencies=[Depends(get_current_user)])
 
 
 def get_default_from_address(db: Session) -> dict:

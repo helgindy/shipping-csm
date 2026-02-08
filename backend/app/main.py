@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .database import engine, Base
+from .database import engine, Base, SessionLocal
 from .config import get_settings
-from .routers import shipments, labels, settings, scanforms
+from .models import User
+from .auth import hash_password
+from .routers import shipments, labels, settings, scanforms, auth
 
 settings_config = get_settings()
 
@@ -15,6 +17,24 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     print(f"Database tables created")
     print(f"EasyPost Environment: {'PRODUCTION' if settings_config.EASYPOST_API_KEY.startswith('EZAK') else 'TEST'}")
+
+    # Seed admin user if not exists
+    db = SessionLocal()
+    try:
+        existing_admin = db.query(User).filter(User.username == settings_config.ADMIN_USERNAME).first()
+        if not existing_admin:
+            admin_user = User(
+                username=settings_config.ADMIN_USERNAME,
+                hashed_password=hash_password(settings_config.ADMIN_PASSWORD),
+            )
+            db.add(admin_user)
+            db.commit()
+            print(f"Admin user '{settings_config.ADMIN_USERNAME}' created")
+        else:
+            print(f"Admin user '{settings_config.ADMIN_USERNAME}' already exists")
+    finally:
+        db.close()
+
     yield
     # Shutdown
     print("Application shutting down")
@@ -42,6 +62,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(auth.router)
 app.include_router(shipments.router)
 app.include_router(labels.router)
 app.include_router(settings.router)

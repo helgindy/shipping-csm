@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from ..auth import get_current_user
 from sqlalchemy.orm import Session
 from typing import List
 from pydantic import BaseModel
@@ -7,7 +8,7 @@ from ..database import get_db
 from ..models import ScanForm
 from ..services import easypost_service
 
-router = APIRouter(prefix="/api/scanforms", tags=["scanforms"])
+router = APIRouter(prefix="/api/scanforms", tags=["scanforms"], dependencies=[Depends(get_current_user)])
 
 
 class ScanFormResponse(BaseModel):

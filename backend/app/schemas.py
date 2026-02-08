@@ -174,6 +174,20 @@ class DashboardStats(BaseModel):
     tracked_shipments: int
 
 
+# Auth schemas
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        from_attributes = True
+
+
 # ScanForm schemas
 class CreateScanFormRequest(BaseModel):
     shipment_ids: List[int]  # Database IDs of shipments to include
