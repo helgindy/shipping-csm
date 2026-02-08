@@ -6,16 +6,16 @@ services:
     image: postgres:15-alpine
     container_name: shipping_db
     environment:
-      POSTGRES_USER: shipping
-      POSTGRES_PASSWORD: shipping123
-      POSTGRES_DB: shipping_db
+      POSTGRES_USER: ${POSTGRES_USER:-shipping}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shipping123}
+      POSTGRES_DB: ${POSTGRES_DB:-shipping_db}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shipping -d shipping_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shipping} -d ${POSTGRES_DB:-shipping_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,14 +26,16 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: shipping_backend
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgresql://shipping:shipping123@postgres:5432/shipping_db
-      EASYPOST_API_KEY_PRODUCTION: ${EASYPOST_API_KEY_PRODUCTION:-EZAKa4eaa3d6b9e342df973b8ebdebff97f9cVn1aUBk85O0lrihLIUznA}
-      EASYPOST_API_KEY_TEST: ${EASYPOST_API_KEY_TEST:-EZTKa4eaa3d6b9e342df973b8ebdebff97f9zozoEtaDrFMRf3xLdJn0cg}
-      EASYPOST_API_KEY: ${EASYPOST_API_KEY:-EZAKa4eaa3d6b9e342df973b8ebdebff97f9cVn1aUBk85O0lrihLIUznA}
-      DEBUG: "true"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-shipping}:${POSTGRES_PASSWORD:-shipping123}@postgres:5432/${POSTGRES_DB:-shipping_db}
+      EASYPOST_API_KEY_PRODUCTION: ${EASYPOST_API_KEY_PRODUCTION}
+      EASYPOST_API_KEY_TEST: ${EASYPOST_API_KEY_TEST}
+      EASYPOST_API_KEY: ${EASYPOST_API_KEY}
+      DEBUG: ${DEBUG:-false}
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -46,7 +48,7 @@ services:
       dockerfile: Dockerfile
     container_name: shipping_frontend
     ports:
-      - "3000:80"
+      - "${FRONTEND_PORT:-3000}:80"
     depends_on:
       - backend
     restart: unless-stopped
@@ -56,10 +58,10 @@ services:
     image: dpage/pgadmin4:latest
     container_name: shipping_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT:-5050}:80"
     depends_on:
       - postgres
     restart: unless-stopped
