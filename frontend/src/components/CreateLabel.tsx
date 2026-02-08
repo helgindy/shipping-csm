@@ -168,6 +168,8 @@ export default function CreateLabel() {
         custom_width: parcel.width?.toString() || '',
         custom_height: parcel.height?.toString() || '',
         custom_weight: parcel.weight?.toString() || '',
+        add_insurance: false,
+        insurance_amount: '',
       })
     }
   }, [returnState])

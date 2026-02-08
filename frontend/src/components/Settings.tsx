@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Save, MapPin, Package, CheckCircle, AlertTriangle, Zap, Plus, Trash2, Edit2, X } from 'lucide-react'
-import { getSettings, updateSettings, switchApiEnvironment, addParcelPreset, updateParcelPreset, deleteParcelPreset, type Settings as SettingsType, type Address, type ParcelPreset, type ParcelPresets } from '../api/client'
+import { getSettings, updateSettings, switchApiEnvironment, addParcelPreset, updateParcelPreset, deleteParcelPreset, type Settings as SettingsType, type Address, type ParcelPreset } from '../api/client'
 
 interface PresetFormData {
   key: string
