@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: shipping_db
+    environment:
+      POSTGRES_USER: shipping
+      POSTGRES_PASSWORD: shipping123
+      POSTGRES_DB: shipping_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shipping -d shipping_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Python Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shipping_backend
+    environment:
+      DATABASE_URL: postgresql://shipping:shipping123@postgres:5432/shipping_db
+      EASYPOST_API_KEY_PRODUCTION: ${EASYPOST_API_KEY_PRODUCTION:-EZAKa4eaa3d6b9e342df973b8ebdebff97f9cVn1aUBk85O0lrihLIUznA}
+      EASYPOST_API_KEY_TEST: ${EASYPOST_API_KEY_TEST:-EZTKa4eaa3d6b9e342df973b8ebdebff97f9zozoEtaDrFMRf3xLdJn0cg}
+      EASYPOST_API_KEY: ${EASYPOST_API_KEY:-EZAKa4eaa3d6b9e342df973b8ebdebff97f9cVn1aUBk85O0lrihLIUznA}
+      DEBUG: "true"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shipping_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # pgAdmin (optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: shipping_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
