@@ -37,7 +37,7 @@ def get_default_from_address(db: Session) -> dict:
 
 
 @router.post("/create", response_model=LabelResponse)
-async def create_label(
+def create_label(
     request: CreateLabelRequest,
     db: Session = Depends(get_db)
 ):
@@ -121,7 +121,7 @@ async def create_label(
 
 
 @router.get("/rates", response_model=RateQuoteResponse)
-async def get_rates(
+def get_rates(
     request: RateQuoteRequest,
     db: Session = Depends(get_db)
 ):
@@ -156,7 +156,7 @@ async def get_rates(
 
 
 @router.post("/bulk")
-async def create_bulk_labels(
+def create_bulk_labels(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -282,7 +282,7 @@ async def create_bulk_labels(
 
 
 @router.get("/print/{shipment_id}")
-async def get_printable_label(
+def get_printable_label(
     shipment_id: int,
     rotate: bool = True,
     db: Session = Depends(get_db)
@@ -301,8 +301,8 @@ async def get_printable_label(
 
     try:
         # Fetch the label image from EasyPost/S3
-        async with httpx.AsyncClient() as client:
-            response = await client.get(shipment.label_url, follow_redirects=True)
+        with httpx.Client() as client:
+            response = client.get(shipment.label_url, follow_redirects=True)
             response.raise_for_status()
 
         # Open image with PIL
@@ -332,7 +332,7 @@ async def get_printable_label(
 
 
 @router.post("/scanform", response_model=ScanFormResponse)
-async def create_scan_form(
+def create_scan_form(
     request: CreateScanFormRequest,
     db: Session = Depends(get_db)
 ):

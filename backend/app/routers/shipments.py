@@ -129,7 +129,7 @@ async def get_shipment(shipment_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/sync")
-async def sync_from_easypost(db: Session = Depends(get_db)):
+def sync_from_easypost(db: Session = Depends(get_db)):
     """
     Sync shipments from EasyPost to local database.
     Imports any shipments not already in the database.
@@ -278,7 +278,7 @@ async def sync_from_easypost(db: Session = Depends(get_db)):
 
 
 @router.post("/refresh-manifested")
-async def refresh_manifested_status(db: Session = Depends(get_db)):
+def refresh_manifested_status(db: Session = Depends(get_db)):
     """
     Check all tracked shipments against EasyPost and update their manifested status.
     Use this to sync manifested status for shipments that were manifested outside this app.
@@ -316,7 +316,7 @@ async def refresh_manifested_status(db: Session = Depends(get_db)):
 
 
 @router.post("/clear-batch-manifested")
-async def clear_batch_manifested(db: Session = Depends(get_db)):
+def clear_batch_manifested(db: Session = Depends(get_db)):
     """
     Clear manifested status for shipments that were incorrectly marked as manifested
     due to a batch_id check. This only clears manifested values that start with "batch:".
@@ -345,7 +345,7 @@ async def clear_batch_manifested(db: Session = Depends(get_db)):
 
 
 @router.get("/debug/{shipment_id}")
-async def debug_easypost_shipment(shipment_id: int, db: Session = Depends(get_db)):
+def debug_easypost_shipment(shipment_id: int, db: Session = Depends(get_db)):
     """
     Debug endpoint to see raw EasyPost data for a shipment.
     Returns what EasyPost returns for scan_form and batch_id fields.

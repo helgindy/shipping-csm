@@ -30,7 +30,7 @@ class ScanFormListResponse(BaseModel):
 
 
 @router.get("", response_model=ScanFormListResponse)
-async def get_scanforms(db: Session = Depends(get_db)):
+def get_scanforms(db: Session = Depends(get_db)):
     """Get all scan forms from database."""
     scanforms = db.query(ScanForm).order_by(ScanForm.created_at.desc()).all()
 
@@ -50,7 +50,7 @@ async def get_scanforms(db: Session = Depends(get_db)):
 
 
 @router.post("/sync")
-async def sync_scanforms(db: Session = Depends(get_db)):
+def sync_scanforms(db: Session = Depends(get_db)):
     """Sync scan forms from EasyPost to database."""
     try:
         easypost_scanforms = easypost_service.get_all_scan_forms()
@@ -92,7 +92,7 @@ async def sync_scanforms(db: Session = Depends(get_db)):
 
 
 @router.get("/{scanform_id}")
-async def get_scanform(scanform_id: int, db: Session = Depends(get_db)):
+def get_scanform(scanform_id: int, db: Session = Depends(get_db)):
     """Get a specific scan form by ID."""
     scanform = db.query(ScanForm).filter(ScanForm.id == scanform_id).first()
     if not scanform:
