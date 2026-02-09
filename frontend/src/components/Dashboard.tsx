@@ -461,7 +461,11 @@ export default function Dashboard() {
     setSyncing(true)
     try {
       const result = await syncShipments()
-      alert(`Synced ${result.imported} shipments from EasyPost`)
+      if (result.error) {
+        alert(`Sync error: ${result.error}`)
+      } else {
+        alert(`Synced ${result.imported} shipments from EasyPost`)
+      }
       fetchData()
     } catch (error) {
       console.error('Sync error:', error)
